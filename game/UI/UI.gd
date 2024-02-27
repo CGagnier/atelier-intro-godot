@@ -6,7 +6,7 @@ extends CanvasLayer
 @onready var gameover_label = $gameoverLabel
 
 func update_score(_score: int) -> void:
-	score_label.text = "Score: " + str(_score)
+	score_label.text = "Collected: " + str(_score)
 
 func update_goal_text(_coins_goal: int) -> void:
 	goal_label.text = "Collect the " + str(_coins_goal) + " coins to win the game"
