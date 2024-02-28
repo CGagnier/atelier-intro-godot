@@ -1,71 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://by3cevqph74km"]
+[gd_scene load_steps=6 format=3 uid="uid://by3cevqph74km"]
 
 [ext_resource type="Texture2D" uid="uid://5leu7dxsfts3" path="res://assets/spritesheet_ground.png" id="5_cdnj0"]
-
-[sub_resource type="GDScript" id="GDScript_l8aop"]
-script/source = "extends Node2D
-## Game manager
-
-signal spaced
-
-var score:int = 0
-var time_elapsed:float = 0
-var collectibles_count:int
-var game_over:bool = false
-
-@onready var UI = $UI
-@onready var player:Player = $Player
-
-# Setup the connections between elements
-func _ready():
-	# Connect all signals from coins 
-	var _collectibles = $Collectibles
-	for collectible in _collectibles.get_children():
-		collectible.collected.connect(_increase_score)
-	
-	var _obstacles = $Obstacles
-	for obstacle in _obstacles.get_children():
-		obstacle.died.connect(_defeat)
-	
-	collectibles_count = _collectibles.get_child_count()
-	
-	_reset_game(collectibles_count)
-
-func _process(delta):
-	if not game_over:
-		time_elapsed += delta
-		UI.update_time(time_elapsed)
-
-func _reset_game(_collectibles_count: int) -> void:
-	score = 0
-	time_elapsed = 0.0
-	UI.update_score(score)
-	UI.update_goal_text(_collectibles_count)
-	UI.gameover(false)
-
-func _increase_score() -> void:
-	score += 1
-	UI.update_score(score)
-	if score >= collectibles_count:
-		_gameover()
-
-# Player died, reset game
-func _defeat() -> void: 
-	get_tree().reload_current_scene()
-
-func _gameover() -> void:
-	game_over = true
-	UI.gameover(game_over, time_elapsed)
-	player.process_mode = Node.PROCESS_MODE_DISABLED
-	
-	await spaced
-	get_tree().reload_current_scene()
-
-func _unhandled_input(event):
-	if event is InputEventKey:
-		if event.pressed and event.keycode == KEY_SPACE:
-			spaced.emit()
-"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xjwy4"]
 texture = ExtResource("5_cdnj0")
@@ -516,7 +451,6 @@ colors = PackedColorArray(1, 1, 1, 1, 0.294844, 0.625655, 0.856278, 1, 0.366345,
 gradient = SubResource("Gradient_143sa")
 
 [node name="main" type="Node2D"]
-script = SubResource("GDScript_l8aop")
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2(-2, 2)
